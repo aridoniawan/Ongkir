@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Pengiriman Barang</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- SweetAlert2 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .container {
+        margin-top: 20px;
+      }
+      .result-container {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 8px;
+        display: none; /* Hide by default */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h4>Form Pengiriman Barang</h4>
+          <form id="shippingForm">
+            <div class="mb-3">
+              <label for="name" class="form-label">Nama:</label>
+              <input type="text" class="form-control" id="name" required />
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Alamat Pengiriman:</label>
+              <textarea
+                class="form-control"
+                id="address"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Harga Barang (Rp):</label>
+              <input type="number" class="form-control" id="price" required />
+            </div>
+            <div class="mb-3">
+              <label for="discount" class="form-label">Diskon:</label>
+              <select class="form-select" id="discount" required>
+                <option value="0">Tidak Ada Diskon</option>
+                <option value="10">10%</option>
+                <option value="50">50%</option>
+                <option value="60">60%</option>
+              </select>
+            </div>
+            <button type="button" class="btn btn-primary" id="submitBtn">
+              Submit
+            </button>
+          </form>
+        </div>
+
+        <div class="col-md-6">
+          <h4>Detail Pengiriman</h4>
+          <div id="result" class="result-container">
+            <p><strong>Nama:</strong> <span id="resultName">-</span></p>
+            <p>
+              <strong>Alamat Pengiriman:</strong>
+              <span id="resultAddress">-</span>
+            </p>
+            <p>
+              <strong>Harga Barang:</strong>
+              <span id="resultPrice">Rp. 0,00</span>
+            </p>
+            <p><strong>Diskon:</strong> <span id="resultDiscount">0</span>%</p>
+            <p>
+              <strong>Total Bayar:</strong>
+              <span id="resultTotal">Rp. 0,00</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#submitBtn").click(function () {
+          const name = $("#name").val();
+          const address = $("#address").val();
+          const price = parseFloat($("#price").val());
+          const discount = parseFloat($("#discount").val());
+
+          if (name && address && price) {
+            const discountedPrice = price - price * (discount / 100);
+
+            // Format harga menjadi Rp. xx.xxx,xx
+            const formattedPrice = formatRupiah(price);
+            const formattedDiscountedPrice = formatRupiah(discountedPrice);
+
+            $("#resultName").text(name);
+            $("#resultAddress").text(address);
+            $("#resultPrice").text(formattedPrice);
+            $("#resultDiscount").text(discount);
+            $("#resultTotal").text(formattedDiscountedPrice);
+
+            // Show result container
+            $("#result").show();
+
+            // SweetAlert to show success message
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil",
+              text: "Data pengiriman telah berhasil diinput!",
+            });
+          } else {
+            // SweetAlert to show error if form is incomplete
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Mohon lengkapi semua data!",
+            });
+          }
+        });
+
+        // Function to format number as Rupiah
+        function formatRupiah(number) {
+          return (
+            "Rp. " +
+            number.toLocaleString("id-ID", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          );
+        }
+      });
+    </script>
+  </body>
+</html>
